@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Inventory Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #6c7fad 0%, #4e68d8 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .splash-container {
+            position: relative;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Logo container with rotating border */
+        .logo-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 30px;
+            animation: fadeInScale 1s ease-out;
+        }
+
+        .rotating-border {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top-color: #fff;
+            border-right-color: #fff;
+            border-radius: 50%;
+            animation: rotate 2s linear infinite;
+        }
+
+        .rotating-border:nth-child(2) {
+            animation-delay: 0.5s;
+            border-top-color: rgba(255, 255, 255, 0.6);
+            border-right-color: rgba(255, 255, 255, 0.6);
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Logo icon */
+        .logo-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Delivery truck icon */
+        .truck {
+            width: 50px;
+            height: 30px;
+            position: relative;
+            animation: truckDrive 2s ease-in-out infinite;
+        }
+
+        .truck-body {
+            width: 35px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 3px;
+            position: absolute;
+            top: 5px;
+        }
+
+        .truck-cabin {
+            width: 15px;
+            height: 18px;
+            background: #764ba2;
+            border-radius: 3px 3px 0 0;
+            position: absolute;
+            left: 0;
+            top: 7px;
+        }
+
+        .truck-wheel {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            animation: wheelRotate 1s linear infinite;
+        }
+
+        .truck-wheel:first-of-type {
+            left: 5px;
+        }
+
+        .truck-wheel:last-of-type {
+            right: 5px;
+        }
+
+        @keyframes truckDrive {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(10px);
+            }
+        }
+
+        @keyframes wheelRotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* AI brain icon */
+        .ai-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .brain-node {
+            width: 4px;
+            height: 4px;
+            background: #764ba2;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .brain-connection {
+            position: absolute;
+            height: 1px;
+            background: #764ba2;
+            transform-origin: left center;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Title */
+        .title {
+            font-size: 48px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .description {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.7s both;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Loading bar */
+        .loading-container {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 0 auto;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #fff 0%, #f0f0f0 100%);
+            border-radius: 10px;
+            animation: loadProgress 5s ease-in-out forwards;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes loadProgress {
+            0% {
+                width: 0%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        /* Loading text */
+        .loading-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin-top: 15px;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .loading-dots {
+            display: inline-block;
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% {
+                content: '.';
+            }
+            40% {
+                content: '..';
+            }
+            60%, 100% {
+                content: '...';
+            }
+        }
+
+        /* Feature icons */
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 24px;
+            animation: bounceIn 1s ease-out;
+        }
+
+        .feature-icon:nth-child(1) {
+            animation-delay: 1.3s;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .feature-label {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* Fade out animation */
+        .fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated particles background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Main splash content -->
+    <div class="splash-container" id="splashContainer">
+        <!-- Rotating logo -->
+        <div class="logo-container">
+            <div class="rotating-border"></div>
+            <div class="rotating-border"></div>
+            <div class="logo-icon">
+                <div class="truck">
+                    <div class="truck-cabin"></div>
+                    <div class="truck-body"></div>
+                    <div class="truck-wheel"></div>
+                    <div class="truck-wheel"></div>
+                </div>
+                <div class="ai-icon">
+                    <div class="brain-node" style="top: 2px; left: 2px;"></div>
+                    <div class="brain-node" style="top: 2px; right: 2px;"></div>
+                    <div class="brain-node" style="bottom: 2px; left: 2px;"></div>
+                    <div class="brain-node" style="bottom: 2px; right: 2px;"></div>
+                    <div class="brain-node" style="top: 8px; left: 8px;"></div>
+                    <div class="brain-connection" style="top: 4px; left: 4px; width: 10px; transform: rotate(45deg);"></div>
+                    <div class="brain-connection" style="top: 4px; right: 4px; width: 10px; transform: rotate(-45deg);"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Title and description -->
+        <h1 class="title">Smart Inventory</h1>
+        <p class="subtitle">AI-Powered Delivery Management</p>
+        <p class="description">
+            Track deliveries in real-time and optimize routes with advanced AI/ML models for safe and efficient logistics
+        </p>
+
+        <!-- Loading bar -->
+        <div class="loading-container">
+            <div class="loading-bar"></div>
+        </div>
+        <p class="loading-text">Initializing system<span class="loading-dots">...</span></p>
+
+        <!-- Feature highlights -->
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon">📦</div>
+                <span class="feature-label">Inventory<br>Tracking</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🤖</div>
+                <span class="feature-label">AI/ML<br>Powered</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🗺️</div>
+                <span class="feature-label">Route<br>Optimization</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Animate loading dots
+        function animateLoadingDots() {
+            const dots = document.querySelector('.loading-dots');
+            let dotCount = 0;
+            
+            setInterval(() => {
+                dotCount = (dotCount + 1) % 4;
+                dots.textContent = '.'.repeat(dotCount);
+            }, 500);
+        }
+
+        // Initialize
+        createParticles();
+        animateLoadingDots();
+
+        // Redirect after 5 seconds with fade out
+        setTimeout(() => {
+            document.getElementById('splashContainer').classList.add('fade-out');
+            
+            // After fade out completes, redirect or load main content
+            setTimeout(() => {
+                // Replace this with your actual main page URL
+                 window.location.href = 'index.html';
+                document.body.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-size: 24px;">Main Application Loaded!</div>';
+            }, 500);
+        }, 5000);
+    </script>
+</body>
+</html>

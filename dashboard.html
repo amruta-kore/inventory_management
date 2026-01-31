@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Smart Supply Chain</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item.active {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-left: 4px solid #fff;
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
+
+        .sidebar-footer {
+            padding: 20px 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(231, 76, 60, 0.8);
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #e74c3c;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h2 {
+            font-size: 24px;
+            color: #2c3e50;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .table-header h3 {
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .add-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th, td {
+            padding: 15px 25px;
+            text-align: left;
+        }
+
+        th {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            color: #2c3e50;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .edit-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .edit-btn:hover, .delete-btn:hover {
+            opacity: 0.8;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-transit {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-delivered {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h3 {
+            font-size: 22px;
+            color: #2c3e50;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #95a5a6;
+            line-height: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #ecf0f1;
+            color: #7f8c8d;
+        }
+
+        /* Track Delivery Section */
+        .track-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .track-input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .track-input-group input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .track-btn {
+            padding: 15px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            height: 500px;
+            display: none;
+        }
+
+        .map-container.active {
+            display: block;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba250 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>SCM Dashboard</h1>
+            <p id="userRole">Loading...</p>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-item active" onclick="showSection('overview')">
+                <span class="menu-icon">📊</span>
+                Overview
+            </div>
+            <div class="menu-item" onclick="showSection('products')">
+                <span class="menu-icon">📦</span>
+                Products
+            </div>
+            <div class="menu-item" onclick="showSection('vehicles')">
+                <span class="menu-icon">🚚</span>
+                Vehicles
+            </div>
+            <div class="menu-item" onclick="showSection('track')">
+                <span class="menu-icon">🗺️</span>
+                Track Delivery
+            </div>
+        </div>
+        
+        <div class="sidebar-footer">
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="topbar">
+            <h2 id="sectionTitle">Overview</h2>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div>
+                    <div style="font-weight: 600; color: #2c3e50;" id="userName">User</div>
+                    <div style="font-size: 13px; color: #7f8c8d;" id="userEmail">user@example.com</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <!-- Overview Section -->
+            <section id="overview" class="section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Products</h3>
+                        <div class="value" id="totalProducts">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Deliveries</h3>
+                        <div class="value" id="activeDeliveries">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Vehicles</h3>
+                        <div class="value" id="totalVehicles">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Completed Today</h3>
+                        <div class="value" id="completedToday">0</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section id="products" class="section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Product Management</h3>
+                        <button class="add-btn" onclick="openProductModal()">+ Add Product</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Code</th>
+                                <th>Name</th>
+                                <th>Customer</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable">
+                            <!-- Products will be load here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Vehicles Section -->
+            <section id="vehicles" class="section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Vehicle Management</h3>
+                        <button class="add-btn" onclick="openVehicleModal()">+ Add Vehicle</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vehicle ID</th>
+                                <th>Type</th>
+                                <th>License Plate</th>
+                                <th>Driver</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehiclesTable">
+                            <!-- Vehicles will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Track Delivery Section -->
+            <section id="track" class="section">
+                <div class="track-form">
+                    <h3 style="margin-bottom: 20px; font-size: 22px;">Track Delivery</h3>
+                    <div class="track-input-group">
+                        <input type="text" id="trackingCode" placeholder="Enter Product/Delivery Code" style="text-transform: uppercase;">
+                        <button class="track-btn" onclick="trackDelivery()">Track</button>
+                    </div>
+                </div>
+                
+                <div id="mapContainer" class="map-container">
+                    <div class="map-placeholder">
+                        <iframe src="http://localhost:5000" width="100%" height="100%" frameborder="0" style="border-radius: 8px;"></iframe>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Product</h3>
+                <button class="close-btn" onclick="closeProductModal()">&times;</button>
+            </div>
+            <form id="productForm" onsubmit="saveProduct(event)">
+                <div class="form-group">
+                    <label>Product Code</label>
+                    <input type="text" id="productCode" required>
+                </div>
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Delivery Address</label>
+                    <textarea id="deliveryAddress" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="productStatus" required>
+                        <option value="Pending">Pending</option>
+                        <option value="In Transit">In Transit</option>
+                        <option value="Delivered">Delivered</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeProductModal()">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Vehicle Modal -->
+    <div id="vehicleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Vehicle</h3>
+                <button class="close-btn" onclick="closeVehicleModal()">&times;</button>
+            </div>
+            <form id="vehicleForm" onsubmit="saveVehicle(event)">
+                <div class="form-group">
+                    <label>Vehicle ID</label>
+                    <input type="text" id="vehicleId" required>
+                </div>
+                <div class="form-group">
+                    <label>Vehicle Type</label>
+                    <select id="vehicleType" required>
+                        <option value="Truck">Truck</option>
+                        <option value="Van">Van</option>
+                        <option value="Bike">Bike</option>
+                        <option value="Car">Car</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>License Plate</label>
+                    <input type="text" id="licensePlate" required>
+                </div>
+                <div class="form-group">
+                    <label>Driver Name</label>
+                    <input type="text" id="driverName" required>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="vehicleStatus" required>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Maintenance">Maintenance</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeVehicleModal()">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize data
+        function initData() {
+            if (!localStorage.getItem('products')) {
+                const products = [
+                    { code: 'DLV001', name: 'Laptop Dell XPS', customer: 'John Doe', address: '123 Main St, New York, NY', status: 'In Transit' },
+                    { code: 'DLV002', name: 'iPhone 15 Pro', customer: 'Jane Smith', address: '456 Oak Ave, Los Angeles, CA', status: 'Delivered' },
+                    { code: 'DLV003', name: 'Samsung TV 55"', customer: 'Mike Johnson', address: '789 Pine Rd, Chicago, IL', status: 'Pending' }
+                ];
+                localStorage.setItem('products', JSON.stringify(products));
+            }
+            
+            if (!localStorage.getItem('vehicles')) {
+                const vehicles = [
+                    { id: 'VH001', type: 'Truck', plate: 'ABC-1234', driver: 'Robert Brown', status: 'Active' },
+                    { id: 'VH002', type: 'Van', plate: 'XYZ-5678', driver: 'Sarah Wilson', status: 'Active' },
+                    { id: 'VH003', type: 'Bike', plate: 'DEF-9012', driver: 'Tom Davis', status: 'Maintenance' }
+                  //  { id: 'VH004', type: 'cycle', plate: 'DEF-9011', driver: 'Tom Davis', status: 'Maintenance' }
+
+                ];
+                localStorage.setItem('vehicles', JSON.stringify(vehicles));
+            }
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const userType = sessionStorage.getItem('userType');
+            if (!userType || userType === 'customer') {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const userName = sessionStorage.getItem('userName') || 'User';
+            const userEmail = sessionStorage.getItem('userEmail') || 'user@example.com';
+            
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userEmail').textContent = userEmail;
+            document.getElementById('userAvatar').textContent = userName.charAt(0).toUpperCase();
+            document.getElementById('userRole').textContent = userType === 'delivery' ? 'Delivery Person' : 'Product Owner';
+        }
+
+        // Show section
+        function showSection(sectionName) {
+            const sections = document.querySelectorAll('.section');
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            sections.forEach(s => s.classList.remove('active'));
+            menuItems.forEach(m => m.classList.remove('active'));
+            
+            document.getElementById(sectionName).classList.add('active');
+            event.target.closest('.menu-item').classList.add('active');
+            
+            const titles = {
+                'overview': 'Overview',
+                'products': 'Products',
+                'vehicles': 'Vehicles',
+                'track': 'Track Delivery'
+            };
+            
+            document.getElementById('sectionTitle').textContent = titles[sectionName];
+            
+            if (sectionName === 'products') loadProducts();
+            if (sectionName === 'vehicles') loadVehicles();
+            if (sectionName === 'overview') updateStats();
+        }
+
+        // Load products
+        function loadProducts() {
+            const products = JSON.parse(localStorage.getItem('products'));
+            const tbody = document.getElementById('productsTable');
+            tbody.innerHTML = '';
+            
+            products.forEach((product, index) => {
+                const statusClass = product.status === 'Delivered' ? 'status-delivered' : 
+                                  product.status === 'In Transit' ? 'status-transit' : 'status-active';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${product.code}</td>
+                        <td>${product.name}</td>
+                        <td>${product.customer}</td>
+                        <td>${product.address}</td>
+                        <td><span class="status-badge ${statusClass}">${product.status}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="edit-btn" onclick="editProduct(${index})">Edit</button>
+                                <button class="delete-btn" onclick="deleteProduct(${index})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Load vehicles
+        function loadVehicles() {
+            const vehicles = JSON.parse(localStorage.getItem('vehicles'));
+            const tbody = document.getElementById('vehiclesTable');
+            tbody.innerHTML = '';
+            
+            vehicles.forEach((vehicle, index) => {
+                const statusClass = vehicle.status === 'Active' ? 'status-active' : 
+                                  vehicle.status === 'Maintenance' ? 'status-transit' : 'status-delivered';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${vehicle.id}</td>
+                        <td>${vehicle.type}</td>
+                        <td>${vehicle.plate}</td>
+                        <td>${vehicle.driver}</td>
+                        <td><span class="status-badge ${statusClass}">${vehicle.status}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="edit-btn" onclick="editVehicle(${index})">Edit</button>
+                                <button class="delete-btn" onclick="deleteVehicle(${index})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Update stats
+        function updateStats() {
+            const products = JSON.parse(localStorage.getItem('products'));
+            const vehicles = JSON.parse(localStorage.getItem('vehicles'));
+            
+            document.getElementById('totalProducts').textContent = products.length;
+            document.getElementById('activeDeliveries').textContent = products.filter(p => p.status === 'In Transit').length;
+            document.getElementById('totalVehicles').textContent = vehicles.length;
+            document.getElementById('completedToday').textContent = products.filter(p => p.status === 'Delivered').length;
+        }
+
+        // Product Modal Functions
+        let editingProductIndex = -1;
+        
+        function openProductModal() {
+            document.getElementById('productModal').classList.add('active');
+            document.getElementById('productForm').reset();
+            editingProductIndex = -1;
+        }
+        
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+        
+        function saveProduct(event) {
+            event.preventDefault();
+            
+            const product = {
+                code: document.getElementById('productCode').value.toUpperCase(),
+                name: document.getElementById('productName').value,
+                customer: document.getElementById('customerName').value,
+                address: document.getElementById('deliveryAddress').value,
+                status: document.getElementById('productStatus').value
+            };
+            
+            const products = JSON.parse(localStorage.getItem('products'));
+            
+            if (editingProductIndex >= 0) {
+                products[editingProductIndex] = product;
+            } else {
+                products.push(product);
+            }
+            
+            localStorage.setItem('products', JSON.stringify(products));
+            closeProductModal();
+            loadProducts();
+            updateStats();
+        }
+        
+        function editProduct(index) {
+            const products = JSON.parse(localStorage.getItem('products'));
+            const product = products[index];
+            
+            document.getElementById('productCode').value = product.code;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('customerName').value = product.customer;
+            document.getElementById('deliveryAddress').value = product.address;
+            document.getElementById('productStatus').value = product.status;
+            
+            editingProductIndex = index;
+            openProductModal();
+        }
+        
+        function deleteProduct(index) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                const products = JSON.parse(localStorage.getItem('products'));
+                products.splice(index, 1);
+                localStorage.setItem('products', JSON.stringify(products));
+                loadProducts();
+                updateStats();
+            }
+        }
+
+        // Vehicle Modal Functions
+        let editingVehicleIndex = -1;
+        
+        function openVehicleModal() {
+            document.getElementById('vehicleModal').classList.add('active');
+            document.getElementById('vehicleForm').reset();
+            editingVehicleIndex = -1;
+        }
+        
+        function closeVehicleModal() {
+            document.getElementById('vehicleModal').classList.remove('active');
+        }
+        
+        function saveVehicle(event) {
+            event.preventDefault();
+            
+            const vehicle = {
+                id: document.getElementById('vehicleId').value.toUpperCase(),
+                type: document.getElementById('vehicleType').value,
+                plate: document.getElementById('licensePlate').value.toUpperCase(),
+                driver: document.getElementById('driverName').value,
+                status: document.getElementById('vehicleStatus').value
+            };
+            
+            const vehicles = JSON.parse(localStorage.getItem('vehicles'));
+            
+            if (editingVehicleIndex >= 0) {
+                vehicles[editingVehicleIndex] = vehicle;
+            } else {
+                vehicles.push(vehicle);
+            }
+            
+            localStorage.setItem('vehicles', JSON.stringify(vehicles));
+            closeVehicleModal();
+            loadVehicles();
+            updateStats();
+        }
+        
+        function editVehicle(index) {
+            const vehicles = JSON.parse(localStorage.getItem('vehicles'));
+            const vehicle = vehicles[index];
+            
+            document.getElementById('vehicleId').value = vehicle.id;
+            document.getElementById('vehicleType').value = vehicle.type;
+            document.getElementById('licensePlate').value = vehicle.plate;
+            document.getElementById('driverName').value = vehicle.driver;
+            document.getElementById('vehicleStatus').value = vehicle.status;
+            
+            editingVehicleIndex = index;
+            openVehicleModal();
+        }
+        
+        function deleteVehicle(index) {
+            if (confirm('Are you sure you want to delete this vehicle?')) {
+                const vehicles = JSON.parse(localStorage.getItem('vehicles'));
+                vehicles.splice(index, 1);
+                localStorage.setItem('vehicles', JSON.stringify(vehicles));
+                loadVehicles();
+                updateStats();
+            }
+        }
+
+        // Track Delivery
+        function trackDelivery() {
+            const code = document.getElementById('trackingCode').value.toUpperCase();
+            const products = JSON.parse(localStorage.getItem('products'));
+            const product = products.find(p => p.code === code);
+            
+            if (product) {
+                document.getElementById('mapContainer').classList.add('active');
+                alert(`Tracking: ${product.name}\nCustomer: ${product.customer}\nStatus: ${product.status}`);
+            } else {
+                alert('Invalid tracking code. Please try again.');
+                document.getElementById('mapContainer').classList.remove('active');
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initialize on load
+        initData();
+        checkAuth();
+        updateStats();
+    </script>
+</body>
+</html>

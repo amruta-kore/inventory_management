@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Supply Chain - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            height: fit-content;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .left-panel {
+    position: relative;        /* required for absolute video */
+    width: 50%;
+    height: 100vh;             /* full height panel */
+    overflow: hidden;          /* hide extra video */
+}
+
+/* video covers entire left panel */
+.left-panel .bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;         
+}
+
+        
+
+        
+
+        .right-panel {
+            padding: 60px 50px;
+            width: 55%;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 26px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: 'Work Sans', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .toggle-form a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .left-panel, .right-panel {
+                width: 100%;
+            }
+            .left-panel {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel" >
+            <video autoplay muted loop playsinline class="bg-video">
+        <source src="curier.mp4" type="video/mp4">
+    </video>
+
+        </div>
+        
+        <div class="right-panel">
+            <!-- Tab Buttons -->
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-section" class="form-section active">
+                <h2>Welcome Back</h2>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">  
+                        <label> 👤 User Type</label>
+                        <select id="loginUserType" required>
+                            <option value="">Select Role</option>
+                            <option value="delivery">Delivery Person</option>
+                            <option value="owner">Product Owner</option>
+                            <option value="customer">Customer</option>
+                        </select>
+                    </div>
+                    
+                    <div id="loginEmailGroup" class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    
+                    <div id="loginPasswordGroup" class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+
+                    <div id="loginCodeGroup" class="form-group" style="display: none;">
+                        <label>Delivery Code</label>
+                        <input type="text" id="loginDeliveryCode" placeholder="Enter your tracking code">
+                    </div>
+                    
+                    <div class="error-message" id="loginError"></div>
+                    
+                    <button type="submit" class="submit-btn">Login</button>
+                </form>
+                
+                <div class="toggle-form">
+                    Don't have an account? <a href="#" onclick="switchTab('signup'); return false;"><u>Sign Up</u></a>
+                </div>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-section" class="form-section">
+                <h2>Create Account</h2>
+                <form id="signupForm" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label>User Type</label>
+                        <select id="signupUserType" required>
+                            <option value="">Select Role</option>
+                            <option value="delivery">Delivery Person</option>
+                            <option value="owner">Product Owner</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="signupEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" required minlength="6">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="signupPhone" required>
+                    </div>
+                    
+                    <div class="error-message" id="signupError"></div>
+                    
+                    <button type="submit" class="submit-btn">Sign Up</button>
+                </form>
+                
+                <div class="toggle-form">
+                    Already have an account? <a href="#" onclick="switchTab('login'); return false;">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize SQLite database in localStorage 
+        function initDB() {
+            if (!localStorage.getItem('users')) {
+                localStorage.setItem('users', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('deliveryCodes')) {
+                // Sample delivery codes for testing
+                const codes = [
+                    { code: 'DLV001', productName: 'Laptop Dell XPS', status: 'In Transit' },
+                    { code: 'DLV002', productName: 'iPhone 15 Pro', status: 'Delivered' },
+                    { code: 'DLV003', productName: 'Samsung TV 55"', status: 'In Transit' }
+                ];
+                localStorage.setItem('deliveryCodes', JSON.stringify(codes));
+            }
+        }
+
+        // Switch between login and signup tabs
+        function switchTab(tab) {
+            const loginSection = document.getElementById('login-section');
+            const signupSection = document.getElementById('signup-section');
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            if (tab === 'login') {
+                loginSection.classList.add('active');
+                signupSection.classList.remove('active');
+                tabButtons[0].classList.add('active');
+            } else {
+                signupSection.classList.add('active');
+                loginSection.classList.remove('active');
+                tabButtons[1].classList.add('active');
+            }
+        }
+
+        // Show/hide fields based on user type in login
+        document.getElementById('loginUserType').addEventListener('change', function() {
+            const emailGroup = document.getElementById('loginEmailGroup');
+            const passwordGroup = document.getElementById('loginPasswordGroup');
+            const codeGroup = document.getElementById('loginCodeGroup');
+            
+            if (this.value === 'customer') {
+                emailGroup.style.display = 'none';
+                passwordGroup.style.display = 'none';
+                codeGroup.style.display = 'block';
+                document.getElementById('loginEmail').required = false;
+                document.getElementById('loginPassword').required = false;
+                document.getElementById('loginDeliveryCode').required = true;
+            } else {
+                emailGroup.style.display = 'block';
+                passwordGroup.style.display = 'block';
+                codeGroup.style.display = 'none';
+                document.getElementById('loginEmail').required = true;
+                document.getElementById('loginPassword').required = true;
+                document.getElementById('loginDeliveryCode').required = false;
+            }
+        });
+
+        // Handle Login
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const userType = document.getElementById('loginUserType').value;
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const deliveryCode = document.getElementById('loginDeliveryCode').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            errorDiv.style.display = 'none';
+            
+            if (userType === 'customer') {
+                // Customer login with delivery code
+                const codes = JSON.parse(localStorage.getItem('deliveryCodes'));
+                const validCode = codes.find(c => c.code === deliveryCode.toUpperCase());
+                
+                if (validCode) {
+                    sessionStorage.setItem('userType', 'customer');
+                    sessionStorage.setItem('deliveryCode', deliveryCode.toUpperCase());
+                    window.location.href = 'tracking.html';
+                } else {
+                    errorDiv.textContent = 'Invalid delivery code. Please try again.';
+                    errorDiv.style.display = 'block';
+                }
+            } else {
+                // Staff login with email and password
+                const users = JSON.parse(localStorage.getItem('users'));
+                const user = users.find(u => u.email === email && u.password === password && u.userType === userType);
+                
+                if (user) {
+                    sessionStorage.setItem('userType', userType);
+                    sessionStorage.setItem('userName', user.name);
+                    sessionStorage.setItem('userEmail', email);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    errorDiv.textContent = 'Invalid credentials. Please try again.';
+                    errorDiv.style.display = 'block';
+                }
+            }
+        }
+
+        // Handle Signup
+        function handleSignup(event) {
+            event.preventDefault();
+            
+            const userType = document.getElementById('signupUserType').value;
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const phone = document.getElementById('signupPhone').value;
+            const errorDiv = document.getElementById('signupError');
+            
+            errorDiv.style.display = 'none';
+            
+            // Get existing users
+            const users = JSON.parse(localStorage.getItem('users'));
+            
+            // Check if email already exists
+            if (users.find(u => u.email === email)) {
+                errorDiv.textContent = 'Email already registered. Please use a different email.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // Add new user
+            const newUser = {
+                id: Date.now(),
+                userType,
+                name,
+                email,
+                password,
+                phone,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Auto login after signup
+            sessionStorage.setItem('userType', userType);
+            sessionStorage.setItem('userName', name);
+            sessionStorage.setItem('userEmail', email);
+            
+            alert('Account created successfully!');
+            window.location.href = 'dashboard.html';
+        }
+
+        // Initialize database on page load
+        initDB();
+    </script>
+</body>
+</html>
